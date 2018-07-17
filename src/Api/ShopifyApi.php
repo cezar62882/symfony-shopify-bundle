@@ -17,6 +17,7 @@ use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\CustomerSavedSearchEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\EventEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\FulFillmentEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\FulfillmentServiceEndpoint;
+use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\InventoryLevelEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\LocationEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\MetafieldEndpoint;
 use CodeCloud\Bundle\ShopifyBundle\Api\Endpoint\OrderEndpoint;
@@ -77,6 +78,7 @@ use GuzzleHttp\ClientInterface;
  * @property TransactionEndpoint Transaction
  * @property UserEndpoint User
  * @property WebhookEndpoint Webhook
+ * @property InventoryLevelEndpoint InventoryLevel
  */
 class ShopifyApi
 {
@@ -124,6 +126,7 @@ class ShopifyApi
         'Transaction' => TransactionEndpoint::class,
         'User' => UserEndpoint::class,
         'Webhook' => WebhookEndpoint::class,
+        'InventoryLevel' => InventoryLevelEndpoint::class,
     ];
 
     /**
