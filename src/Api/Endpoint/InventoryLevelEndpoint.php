@@ -28,4 +28,12 @@ class InventoryLevelEndpoint extends AbstractEndpoint
 
         return $this->createCollection($response->get('inventory_level'));
     }
+
+    public function set(GenericResource $resource)
+    {
+        $request = new PostJson('/admin/inventory_levels/set.json', $resource->toArray());
+        $response = $this->send($request);
+
+        return $this->createCollection($response->get('inventory_level'));
+    }
 }
