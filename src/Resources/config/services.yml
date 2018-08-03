@@ -66,6 +66,7 @@ services:
       class: CodeCloud\Bundle\ShopifyBundle\Security\SessionAuthenticator
       arguments:
           - "@router"
+          - '@twig'
 
   codecloud_shopify.security.admin_user_provider:
       public: false

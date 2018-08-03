@@ -12,6 +12,7 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Twig\Environment;
 
 
 /**
@@ -25,11 +26,17 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
     private $urlGenerator;
 
     /**
+     * @var Environment
+     */
+    private $twig;
+
+    /**
      * @param UrlGeneratorInterface $urlGenerator
      */
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(UrlGeneratorInterface $urlGenerator, Environment $twig)
     {
         $this->urlGenerator = $urlGenerator;
+        $this->twig = $twig;
     }
 
     /**
@@ -81,7 +88,7 @@ class SessionAuthenticator extends AbstractGuardAuthenticator
     public function start(Request $request, AuthenticationException $authException = null)
     {
         if (!$request->get('shop')) {
-            return new Response('Your session has expired. Please access the app via Shopify Admin again.');
+            return new Response($this->twig->render('@CodeCloudShopify/login.html.twig'));
         }
 
         return new RedirectResponse(
