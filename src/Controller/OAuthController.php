@@ -91,6 +91,8 @@ class OAuthController
             throw new BadRequestHttpException('Request is missing required parameter "shop".');
         }
 
+        $storeName = str_replace(['http://', 'https://'], ['', ''], $storeName);
+
         if ($response = $this->dispatcher->dispatch(
             PreAuthEvent::NAME,
             new PreAuthEvent($storeName))->getResponse()
