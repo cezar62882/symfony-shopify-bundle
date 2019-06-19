@@ -36,7 +36,7 @@ services:
   codecloud_shopify.listener.webhooks_logger:
       class: CodeCloud\Bundle\ShopifyBundle\EventListener\WebhookLoggerListener
       arguments:
-          - "@logger"
+          - "@codecloud_shopify.webhook_logger"
       tags:
           - { name: kernel.event_subscriber }
 
