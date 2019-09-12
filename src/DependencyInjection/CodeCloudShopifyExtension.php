@@ -30,6 +30,7 @@ class CodeCloudShopifyExtension extends Extension
         $loader->load('services.yml');
 
         $container->setAlias('codecloud_shopify.store_manager', $config['store_manager_id']);
+        $container->setAlias('codecloud_shopify.webhook_logger', $config['webhook_logger']);
 
         if (!empty($config['dev_impersonate_store'])) {
             $definition = new Definition(

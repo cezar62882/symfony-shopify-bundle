@@ -19,6 +19,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode->children()
             ->scalarNode('store_manager_id')->isRequired()->cannotBeEmpty()->end()
+            ->scalarNode('webhook_logger')->defaultValue('logger')->end()
             ->arrayNode('oauth')->isRequired()
                 ->children()
                     ->scalarNode('api_key')->isRequired()->cannotBeEmpty()->end()
