@@ -101,7 +101,13 @@ abstract class AbstractEndpoint
             $guzzleResponse = $this->client->send($request);
         } catch (ClientException $exception) {
             if ($exception->getCode() === self::TOO_MANY_REQUEST_ERROR_CODE) {
+                if (strpos($exception->getResponse()->getBody()->getContents(), 'Daily variant creation limit reached') !== false) {
+                    throw $exception;
+                }
+
+                // Sleep 1 sec
                 sleep(1);
+
                 return $this->process($request);
             } else {
                 throw $exception;
