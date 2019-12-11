@@ -8,6 +8,7 @@ use CodeCloud\Bundle\ShopifyBundle\Service\WebhookVerifier;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WebhookController
@@ -59,7 +60,7 @@ class WebhookController
         $signature = $request->headers->get('X-Shopify-Hmac-SHA256', '');
 
         if (! $this->webhookVerifier->verify($content, $signature)) {
-            throw new NotFoundHttpException('Signature is invalid');
+            throw new BadRequestHttpException('Invalid HMAC Signature');
         }
 
         $payload = \GuzzleHttp\json_decode($content, true);
