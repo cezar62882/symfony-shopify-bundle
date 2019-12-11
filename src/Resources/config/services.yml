@@ -22,6 +22,7 @@ services:
       arguments:
           - "@codecloud_shopify.store_manager"
           - "@event_dispatcher"
+          - "@codecloud_shopify.webhook_verifier"
       public: true
 
   codecloud_shopify.command.webhooks:
@@ -87,6 +88,11 @@ services:
       arguments:
           - "@codecloud_shopify.shopify_api_factory"
           - "@router"
+
+  codecloud_shopify.webhook_verifier:
+      class: CodeCloud\Bundle\ShopifyBundle\Service\WebhookVerifier
+      arguments:
+          - "%codecloud_shopify.oauth.shared_secret%"
 
   codecloud_shopify.listener.session_authentication:
       class: CodeCloud\Bundle\ShopifyBundle\EventListener\SessionAuthenticationListener

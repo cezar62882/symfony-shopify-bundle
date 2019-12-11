@@ -4,6 +4,7 @@ namespace CodeCloud\Bundle\ShopifyBundle\Controller;
 
 use CodeCloud\Bundle\ShopifyBundle\Event\WebhookEvent;
 use CodeCloud\Bundle\ShopifyBundle\Model\ShopifyStoreManagerInterface;
+use CodeCloud\Bundle\ShopifyBundle\Service\WebhookVerifier;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,14 +22,20 @@ class WebhookController
      */
     private $eventDispatcher;
 
+    private $webhookVerifier;
+
     /**
      * @param ShopifyStoreManagerInterface $storeManager
      * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(ShopifyStoreManagerInterface $storeManager, EventDispatcherInterface $eventDispatcher)
-    {
+    public function __construct(
+        ShopifyStoreManagerInterface $storeManager,
+        EventDispatcherInterface $eventDispatcher,
+        WebhookVerifier $webhookVerifier
+    ) {
         $this->storeManager = $storeManager;
         $this->eventDispatcher = $eventDispatcher;
+        $this->webhookVerifier = $webhookVerifier;
     }
 
     /**
@@ -48,7 +55,14 @@ class WebhookController
             throw new NotFoundHttpException();
         }
 
-        $payload = \GuzzleHttp\json_decode($request->getContent(), true);
+        $content = $request->getContent();
+        $signature = $request->headers->get('X-Shopify-Hmac-SHA256', '');
+
+        if (! $this->webhookVerifier->verify($content, $signature)) {
+            throw new NotFoundHttpException('Signature is invalid');
+        }
+
+        $payload = \GuzzleHttp\json_decode($content, true);
 
         $this->eventDispatcher->dispatch(WebhookEvent::NAME, new WebhookEvent(
             $topic,
