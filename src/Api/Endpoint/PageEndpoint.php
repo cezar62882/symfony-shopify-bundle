@@ -6,16 +6,17 @@ use CodeCloud\Bundle\ShopifyBundle\Api\Request\GetJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PostJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PutJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\GenericResource;
+use CodeCloud\Bundle\ShopifyBundle\Api\ResourceCollection;
 
 class PageEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
-     * @return array|GenericResource
+     * @return array|ResourceCollection|GenericResource[]
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/pages.json', $query);
+        $request = new GetJson('pages.json', $query);
         $response = $this->sendPaged($request, 'pages');
         return $this->createCollection($response->get('pages'));
     }
@@ -26,7 +27,7 @@ class PageEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/pages.json', $query);
+        $request = new GetJson('pages.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -39,7 +40,7 @@ class PageEndpoint extends AbstractEndpoint
     public function findOne($pageId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/pages/' . $pageId . '.json', $params);
+        $request = new GetJson('pages/' . $pageId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('page'));
     }
@@ -50,7 +51,7 @@ class PageEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $page)
     {
-        $request = new PostJson('/admin/pages.json', array('page' => $page->toArray()));
+        $request = new PostJson('pages.json', array('page' => $page->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('page'));
     }
@@ -62,7 +63,7 @@ class PageEndpoint extends AbstractEndpoint
      */
     public function update($pageId, GenericResource $page)
     {
-        $request = new PutJson('/admin/pages/' . $pageId. '.json', array('page' => $page->toArray()));
+        $request = new PutJson('pages/' . $pageId. '.json', array('page' => $page->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('page'));
     }
@@ -72,7 +73,7 @@ class PageEndpoint extends AbstractEndpoint
      */
     public function delete($pageId)
     {
-        $request = new DeleteParams('/admin/pages/' . $pageId . '.json');
+        $request = new DeleteParams('pages/' . $pageId . '.json');
         $this->send($request);
     }
 }

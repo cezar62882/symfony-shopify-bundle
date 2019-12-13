@@ -6,16 +6,17 @@ use CodeCloud\Bundle\ShopifyBundle\Api\Request\GetJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PostJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\GenericResource;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PutJson;
+use CodeCloud\Bundle\ShopifyBundle\Api\ResourceCollection;
 
 class CustomerEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
-     * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
+     * @return array|ResourceCollection|GenericResource[]
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/customers.json', $query);
+        $request = new GetJson('customers.json', $query);
         $response = $this->sendPaged($request, 'customers');
         return $this->createCollection($response);
     }
@@ -23,23 +24,23 @@ class CustomerEndpoint extends AbstractEndpoint
     /**
      * @param int $customerId
      * @param array $fields
-     * @return array|GenericResource[]
+     * @return array|ResourceCollection|GenericResource[]
      */
     public function findOrdersForCustomer($customerId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/customers/' . $customerId . '.json', $params);
+        $request = new GetJson('customers/' . $customerId . '.json', $params);
         $response = $this->sendPaged($request, 'customers');
         return $this->createCollection($response);
     }
 
     /**
      * @param array $query
-     * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
+     * @return array|ResourceCollection|GenericResource[]
      */
     public function search(array $query = array())
     {
-        $request = new GetJson('/admin/customers/search.json', $query);
+        $request = new GetJson('customers/search.json', $query);
         $response = $this->sendPaged($request, 'customers');
         return $this->createCollection($response);
     }
@@ -49,7 +50,7 @@ class CustomerEndpoint extends AbstractEndpoint
      */
     public function countAll()
     {
-        $request = new GetJson('/admin/customers/count.json');
+        $request = new GetJson('customers/count.json');
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -60,7 +61,7 @@ class CustomerEndpoint extends AbstractEndpoint
      */
     public function findOne($customerId)
     {
-        $request = new GetJson('/admin/customers/' . $customerId . '.json');
+        $request = new GetJson('customers/' . $customerId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('customer'));
     }
@@ -71,7 +72,7 @@ class CustomerEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $customer)
     {
-        $request = new PostJson('/admin/customers.json', array('customer' => $customer->toArray()));
+        $request = new PostJson('customers.json', array('customer' => $customer->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('customer'));
     }
@@ -83,7 +84,7 @@ class CustomerEndpoint extends AbstractEndpoint
      */
     public function update($customerId, GenericResource $customer)
     {
-        $request = new PutJson('/admin/customers/' . $customerId . '.json', array('customer' => $customer->toArray()));
+        $request = new PutJson('customers/' . $customerId . '.json', array('customer' => $customer->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('customer'));
     }
@@ -93,7 +94,7 @@ class CustomerEndpoint extends AbstractEndpoint
      */
     public function delete($customerId)
     {
-        $request = new DeleteParams('/admin/customers/' . $customerId . '.json');
+        $request = new DeleteParams('customers/' . $customerId . '.json');
         $this->send($request);
     }
 }

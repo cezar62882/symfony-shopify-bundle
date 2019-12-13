@@ -6,17 +6,18 @@ use CodeCloud\Bundle\ShopifyBundle\Api\Request\GetJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PostJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PutJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\GenericResource;
+use CodeCloud\Bundle\ShopifyBundle\Api\ResourceCollection;
 
 class ProductVariantEndpoint extends AbstractEndpoint
 {
     /**
      * @param int $productId
      * @param array $query
-     * @return array|GenericResource[]
+     * @return array|ResourceCollection|GenericResource[]
      */
     public function findByProduct($productId, array $query = array())
     {
-        $request = new GetJson('/admin/products/' . $productId . '/variants.json', $query);
+        $request = new GetJson('products/' . $productId . '/variants.json', $query);
         $response = $this->sendPaged($request, 'variants');
         return $this->createCollection($response);
     }
@@ -27,7 +28,7 @@ class ProductVariantEndpoint extends AbstractEndpoint
      */
     public function countByProduct($productId)
     {
-        $request = new GetJson('/admin/products/' . $productId . '/variants/count.json');
+        $request = new GetJson('products/' . $productId . '/variants/count.json');
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -38,7 +39,7 @@ class ProductVariantEndpoint extends AbstractEndpoint
      */
     public function findOne($variantId)
     {
-        $request = new GetJson('/admin/variants/' . $variantId . '.json');
+        $request = new GetJson('variants/' . $variantId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('variant'));
     }
@@ -50,7 +51,7 @@ class ProductVariantEndpoint extends AbstractEndpoint
      */
     public function create($productId, GenericResource $variant)
     {
-        $request = new PostJson('/admin/products/' . $productId . '/variants.json', array('variant' => $variant->toArray()));
+        $request = new PostJson('products/' . $productId . '/variants.json', array('variant' => $variant->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('variant'));
     }
@@ -62,7 +63,7 @@ class ProductVariantEndpoint extends AbstractEndpoint
      */
     public function update($variantId, GenericResource $variant)
     {
-        $request = new PutJson('/admin/variants/' . $variantId . '.json', array('variant' => $variant->toArray()));
+        $request = new PutJson('variants/' . $variantId . '.json', array('variant' => $variant->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('variant'));
     }
@@ -72,7 +73,7 @@ class ProductVariantEndpoint extends AbstractEndpoint
      */
     public function delete($variantId)
     {
-        $request = new DeleteParams('/admin/variants/' . $variantId . '.json');
+        $request = new DeleteParams('variants/' . $variantId . '.json');
         $this->send($request);
     }
 }

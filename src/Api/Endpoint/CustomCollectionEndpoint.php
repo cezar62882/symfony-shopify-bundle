@@ -6,16 +6,17 @@ use CodeCloud\Bundle\ShopifyBundle\Api\Request\GetJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PostJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PutJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\GenericResource;
+use CodeCloud\Bundle\ShopifyBundle\Api\ResourceCollection;
 
 class CustomCollectionEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
-     * @return array|GenericResource[]
+     * @return array|ResourceCollection|GenericResource[]
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/custom_collections.json', $query);
+        $request = new GetJson('custom_collections.json', $query);
         $response = $this->sendPaged($request, 'custom_collections');
         return $this->createCollection($response);
     }
@@ -26,7 +27,7 @@ class CustomCollectionEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/custom_collections/count.json', $query);
+        $request = new GetJson('custom_collections/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -37,7 +38,7 @@ class CustomCollectionEndpoint extends AbstractEndpoint
      */
     public function findOne($customCollectionId)
     {
-        $request = new GetJson('/admin/custom_collections/' . $customCollectionId . '.json');
+        $request = new GetJson('custom_collections/' . $customCollectionId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('custom_collection'));
     }
@@ -48,7 +49,7 @@ class CustomCollectionEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $customCollection)
     {
-        $request = new PostJson('/admin/custom_collections.json', array('custom_collection' => $customCollection->toArray()));
+        $request = new PostJson('custom_collections.json', array('custom_collection' => $customCollection->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('custom_collection'));
     }
@@ -60,7 +61,7 @@ class CustomCollectionEndpoint extends AbstractEndpoint
      */
     public function update($customCollectionId, GenericResource $customCollection)
     {
-        $request = new PutJson('/admin/custom_collections/' . $customCollectionId . '.json', array('custom_collection' => $customCollection->toArray()));
+        $request = new PutJson('custom_collections/' . $customCollectionId . '.json', array('custom_collection' => $customCollection->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('custom_collection'));
     }
@@ -70,7 +71,7 @@ class CustomCollectionEndpoint extends AbstractEndpoint
      */
     public function delete($customCollectionId)
     {
-        $request = new DeleteParams('/admin/custom_collections/' . $customCollectionId . '.json');
+        $request = new DeleteParams('custom_collections/' . $customCollectionId . '.json');
         $this->send($request);
     }
 }

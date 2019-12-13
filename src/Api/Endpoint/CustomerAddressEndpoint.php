@@ -6,16 +6,17 @@ use CodeCloud\Bundle\ShopifyBundle\Api\Request\GetJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PostJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PutJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\GenericResource;
+use CodeCloud\Bundle\ShopifyBundle\Api\ResourceCollection;
 
 class CustomerAddressEndpoint extends AbstractEndpoint
 {
     /**
      * @param int $customerId
-     * @return array
+     * @return array|ResourceCollection|GenericResource
      */
     public function findByCustomer($customerId)
     {
-        $request = new GetJson('/admin/customers/' . $customerId . '.json');
+        $request = new GetJson('customers/' . $customerId . '.json');
         $response = $this->sendPaged($request, 'addresses');
         return $this->createCollection($response);
     }
@@ -27,7 +28,7 @@ class CustomerAddressEndpoint extends AbstractEndpoint
      */
     public function findOne($customerId, $addressId)
     {
-        $request = new GetJson('/admin/customers/' . $customerId . '/addresses/' . $addressId . '.json');
+        $request = new GetJson('customers/' . $customerId . '/addresses/' . $addressId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('customer_address'));
     }
@@ -39,7 +40,7 @@ class CustomerAddressEndpoint extends AbstractEndpoint
      */
     public function create($customerId, GenericResource $address)
     {
-        $request = new PostJson('/admin/customers/' . $customerId . '/addresses.json', array('address' => $address->toArray()));
+        $request = new PostJson('customers/' . $customerId . '/addresses.json', array('address' => $address->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('customer_address'));
     }
@@ -52,7 +53,7 @@ class CustomerAddressEndpoint extends AbstractEndpoint
      */
     public function update($customerId, $addressId, GenericResource $address)
     {
-        $request = new PutJson('/admin/customers/' . $customerId . '/addresses/' . $addressId . '.json', array('address' => $address->toArray()));
+        $request = new PutJson('customers/' . $customerId . '/addresses/' . $addressId . '.json', array('address' => $address->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('customer_address'));
     }
@@ -63,7 +64,7 @@ class CustomerAddressEndpoint extends AbstractEndpoint
      */
     public function delete($customerId, $addressId)
     {
-        $request = new DeleteParams('/admin/customers/' . $customerId . '/addresses/' . $addressId . '.json');
+        $request = new DeleteParams('customers/' . $customerId . '/addresses/' . $addressId . '.json');
         $this->send($request);
     }
 
@@ -82,7 +83,7 @@ class CustomerAddressEndpoint extends AbstractEndpoint
 
         $queryString[] = 'operation=' . $bulkOperation;
 
-        $request = new PutJson('/admin/customers/' . $customerId . '/addresses/set.json?' . implode('&', $queryString));
+        $request = new PutJson('customers/' . $customerId . '/addresses/set.json?' . implode('&', $queryString));
         $this->send($request);
     }
 
@@ -92,7 +93,7 @@ class CustomerAddressEndpoint extends AbstractEndpoint
      */
     public function setAsDefault($customerId, $addressId)
     {
-        $request = new PutJson('/admin/customers/' . $customerId . '/addresses/' . $addressId . '/default.json');
+        $request = new PutJson('customers/' . $customerId . '/addresses/' . $addressId . '/default.json');
         $this->send($request);
     }
 }

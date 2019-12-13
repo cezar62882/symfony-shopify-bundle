@@ -15,7 +15,7 @@ class InventoryLevelEndpoint extends AbstractEndpoint
      */
     public function findAll(array $query)
     {
-        $request = new GetJson('/admin/inventory_levels.json', $query);
+        $request = new GetJson('inventory_levels.json', $query);
         $response = $this->send($request);
 
         return $this->createCollection($response->get('inventory_levels'));
@@ -23,7 +23,7 @@ class InventoryLevelEndpoint extends AbstractEndpoint
 
     public function adjust(GenericResource $adjust)
     {
-        $request = new PostJson('/admin/inventory_levels/adjust.json', $adjust->toArray());
+        $request = new PostJson('inventory_levels/adjust.json', $adjust->toArray());
         $response = $this->send($request);
 
         return $this->createCollection($response->get('inventory_level'));
@@ -31,7 +31,7 @@ class InventoryLevelEndpoint extends AbstractEndpoint
 
     public function set(GenericResource $resource)
     {
-        $request = new PostJson('/admin/inventory_levels/set.json', $resource->toArray());
+        $request = new PostJson('inventory_levels/set.json', $resource->toArray());
         $response = $this->send($request);
 
         return $this->createEntity($response->get('inventory_level'));

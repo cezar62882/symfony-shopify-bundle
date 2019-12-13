@@ -6,16 +6,17 @@ use CodeCloud\Bundle\ShopifyBundle\Api\Request\GetJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PostJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PutJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\GenericResource;
+use CodeCloud\Bundle\ShopifyBundle\Api\ResourceCollection;
 
 class RedirectEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
-     * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
+     * @return array|ResourceCollection|GenericResource[]
      */
     public function findAll(array $query = array())
     {
-        $request = new GetJson('/admin/redirects.json', $query);
+        $request = new GetJson('redirects.json', $query);
         $response = $this->sendPaged($request, 'redirects');
         return $this->createCollection($response);
     }
@@ -26,7 +27,7 @@ class RedirectEndpoint extends AbstractEndpoint
      */
     public function countAll(array $query = array())
     {
-        $request = new GetJson('/admin/redirects/count.json', $query);
+        $request = new GetJson('redirects/count.json', $query);
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -39,7 +40,7 @@ class RedirectEndpoint extends AbstractEndpoint
     public function findOne($redirectId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/redirects/' . $redirectId . '.json', $params);
+        $request = new GetJson('redirects/' . $redirectId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('redirect'));
     }
@@ -50,7 +51,7 @@ class RedirectEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $redirect)
     {
-        $request = new PostJson('/admin/redirects.json', array('redirect' => $redirect->toArray()));
+        $request = new PostJson('redirects.json', array('redirect' => $redirect->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('redirect'));
     }
@@ -62,7 +63,7 @@ class RedirectEndpoint extends AbstractEndpoint
      */
     public function update($redirectId, GenericResource $redirect)
     {
-        $request = new PutJson('/admin/redirects/' . $redirectId . '.json', array('redirect' => $redirect->toArray()));
+        $request = new PutJson('redirects/' . $redirectId . '.json', array('redirect' => $redirect->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('redirect'));
     }
@@ -72,7 +73,7 @@ class RedirectEndpoint extends AbstractEndpoint
      */
     public function delete($redirectId)
     {
-        $request = new DeleteParams('/admin/redirects/' . $redirectId . '.json');
+        $request = new DeleteParams('redirects/' . $redirectId . '.json');
         $this->send($request);
     }
 }
