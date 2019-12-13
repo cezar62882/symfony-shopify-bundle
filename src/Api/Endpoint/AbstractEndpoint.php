@@ -151,7 +151,7 @@ abstract class AbstractEndpoint
         }
 
         if (empty($params['limit'])) {
-            $params['limit'] = 100;
+            $params['limit'] = 250;
         }
 
         $allResults = array();
