@@ -14,7 +14,7 @@ class CountryEndpoint extends AbstractEndpoint
      */
     public function findAll()
     {
-        $request = new GetJson('/admin/countries.json');
+        $request = new GetJson('countries.json');
         $response = $this->send($request);
         return $this->createCollection($response->get('countries'));
     }
@@ -24,7 +24,7 @@ class CountryEndpoint extends AbstractEndpoint
      */
     public function countAll()
     {
-        $request = new GetJson('/admin/countries/count.json');
+        $request = new GetJson('countries/count.json');
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -35,7 +35,7 @@ class CountryEndpoint extends AbstractEndpoint
      */
     public function findOne($countryId)
     {
-        $request = new GetJson('/admin/countries/' . $countryId . '.json');
+        $request = new GetJson('countries/' . $countryId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('country'));
     }
@@ -46,7 +46,7 @@ class CountryEndpoint extends AbstractEndpoint
      */
     public function create(GenericResource $country)
     {
-        $request = new PostJson('/admin/countries.json', array('country' => $country->toArray()));
+        $request = new PostJson('countries.json', array('country' => $country->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('country'));
     }
@@ -58,7 +58,7 @@ class CountryEndpoint extends AbstractEndpoint
      */
     public function update($countryId, GenericResource $country)
     {
-        $request = new PutJson('/admin/countries/' . $countryId . '.json', array('country' => $country->toArray()));
+        $request = new PutJson('countries/' . $countryId . '.json', array('country' => $country->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('country'));
     }
@@ -68,7 +68,7 @@ class CountryEndpoint extends AbstractEndpoint
      */
     public function delete($countryId)
     {
-        $request = new DeleteParams('/admin/countries/' . $countryId . '.json');
+        $request = new DeleteParams('countries/' . $countryId . '.json');
         $this->send($request);
     }
 }

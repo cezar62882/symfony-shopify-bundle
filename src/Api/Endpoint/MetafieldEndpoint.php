@@ -6,16 +6,17 @@ use CodeCloud\Bundle\ShopifyBundle\Api\Request\GetJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PostJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\PutJson;
 use CodeCloud\Bundle\ShopifyBundle\Api\GenericResource;
+use CodeCloud\Bundle\ShopifyBundle\Api\ResourceCollection;
 
 class MetafieldEndpoint extends AbstractEndpoint
 {
     /**
      * @param array $query
-     * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
+     * @return array|ResourceCollection|GenericResource[]
      */
     public function findStoreMetafields(array $query = array())
     {
-        $request = new GetJson('/admin/metafields.json', $query);
+        $request = new GetJson('metafields.json', $query);
         $response = $this->sendPaged($request, 'metafields');
         return $this->createCollection($response);
     }
@@ -23,18 +24,18 @@ class MetafieldEndpoint extends AbstractEndpoint
     /**
      * @param int $productId
      * @param array $query
-     * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
+     * @return array|ResourceCollection|GenericResource[]
      */
     public function findProductMetafields($productId, array $query = array())
     {
-        $request = new GetJson('/admin/products/' . $productId . '/metafields.json', $query);
+        $request = new GetJson('products/' . $productId . '/metafields.json', $query);
         $response = $this->sendPaged($request, 'metafields');
         return $this->createCollection($response);
     }
 
     /**
      * @param int $productImageId
-     * @return array|\CodeCloud\Bundle\ShopifyBundle\Api\GenericResource[]
+     * @return array|ResourceCollection|GenericResource[]
      */
     public function findProductImageMetafields($productImageId)
     {
@@ -43,7 +44,7 @@ class MetafieldEndpoint extends AbstractEndpoint
             'metafield[owner_resource]' => 'product_image'
         );
 
-        $request = new GetJson('/admin/metafields.json', $params);
+        $request = new GetJson('metafields.json', $params);
         $response = $this->sendPaged($request, 'metafields');
         return $this->createCollection($response);
     }
@@ -54,7 +55,7 @@ class MetafieldEndpoint extends AbstractEndpoint
      */
     public function findOneStoreMetafield($metafieldId)
     {
-        $request = new GetJson('/admin/metafields/' . $metafieldId . '.json');
+        $request = new GetJson('metafields/' . $metafieldId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('metafield'));
     }
@@ -66,7 +67,7 @@ class MetafieldEndpoint extends AbstractEndpoint
      */
     public function findOneProductMetafield($metafieldId, $productId)
     {
-        $request = new GetJson('/admin/products/' . $productId . '/metafields/' . $metafieldId . '.json');
+        $request = new GetJson('products/' . $productId . '/metafields/' . $metafieldId . '.json');
         $response = $this->send($request);
         return $this->createEntity($response->get('metafield'));
     }
@@ -76,7 +77,7 @@ class MetafieldEndpoint extends AbstractEndpoint
      */
     public function countStoreMetafields()
     {
-        $request = new GetJson('/admin/metafields/count.json');
+        $request = new GetJson('metafields/count.json');
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -87,7 +88,7 @@ class MetafieldEndpoint extends AbstractEndpoint
      */
     public function countByProduct($productId)
     {
-        $request = new GetJson('/admin/products/' . $productId . '/metafields/count.json');
+        $request = new GetJson('products/' . $productId . '/metafields/count.json');
         $response = $this->send($request);
         return $response->get('count');
     }
@@ -98,7 +99,7 @@ class MetafieldEndpoint extends AbstractEndpoint
      */
     public function createStoreMetafield(GenericResource $metafield)
     {
-        $request = new PostJson('/admin/metafields.json', array('metafield' => $metafield->toArray()));
+        $request = new PostJson('metafields.json', array('metafield' => $metafield->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('metafield'));
     }
@@ -110,7 +111,7 @@ class MetafieldEndpoint extends AbstractEndpoint
      */
     public function updateStoreMetafield($metafieldId, GenericResource $metafield)
     {
-        $request = new PutJson('/admin/metafields/' . $metafieldId . '.json', array('metafield' => $metafield->toArray()));
+        $request = new PutJson('metafields/' . $metafieldId . '.json', array('metafield' => $metafield->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('metafield'));
     }
@@ -120,7 +121,7 @@ class MetafieldEndpoint extends AbstractEndpoint
      */
     public function deleteStoreMetafield($metafieldId)
     {
-        $request = new DeleteParams('/admin/metafields/' . $metafieldId . '.json');
+        $request = new DeleteParams('metafields/' . $metafieldId . '.json');
         $this->send($request);
     }
 
@@ -131,7 +132,7 @@ class MetafieldEndpoint extends AbstractEndpoint
      */
     public function createProductMetafield($productId, GenericResource $metafield)
     {
-        $request = new PostJson('/admin/products/' . $productId . '/metafields.json', array('metafield' => $metafield->toArray()));
+        $request = new PostJson('products/' . $productId . '/metafields.json', array('metafield' => $metafield->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('metafield'));
     }
@@ -144,7 +145,7 @@ class MetafieldEndpoint extends AbstractEndpoint
      */
     public function updateProductMetafield($metafieldId, $productId, GenericResource $metafield)
     {
-        $request = new PutJson('/admin/products/' . $productId . '/metafields/' . $metafieldId . '.json', array('metafield' => $metafield->toArray()));
+        $request = new PutJson('products/' . $productId . '/metafields/' . $metafieldId . '.json', array('metafield' => $metafield->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('metafield'));
     }
@@ -155,7 +156,7 @@ class MetafieldEndpoint extends AbstractEndpoint
      */
     public function deleteProductMetafield($metafieldId, $productId)
     {
-        $request = new DeleteParams('/admin/products/' . $productId . '/metafields/' . $metafieldId . '.json');
+        $request = new DeleteParams('products/' . $productId . '/metafields/' . $metafieldId . '.json');
         $this->send($request);
     }
 }

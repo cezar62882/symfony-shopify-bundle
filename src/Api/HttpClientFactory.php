@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class HttpClientFactory implements HttpClientFactoryInterface
 {
+    private $apiVersion = '2019-10';
+
     public function createHttpClient($storeName, $credentials)
     {
         $handlers = HandlerStack::create();
@@ -41,7 +43,7 @@ class HttpClientFactory implements HttpClientFactoryInterface
         ));
 
         $options = [
-            'base_uri' => 'https://' . $storeName,
+            'base_uri' => "https://{$storeName}/admin/api/{$this->apiVersion}/",
             //'handler' => $handlers,
         ];
 

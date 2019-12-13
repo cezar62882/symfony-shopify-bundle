@@ -3,6 +3,7 @@ namespace CodeCloud\Bundle\ShopifyBundle\Api\Endpoint;
 
 use CodeCloud\Bundle\ShopifyBundle\Api\Request\Exception\FailedRequestException;
 use CodeCloud\Bundle\ShopifyBundle\Api\GenericResource;
+use CodeCloud\Bundle\ShopifyBundle\Api\ResourceCollection;
 use GuzzleHttp\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use CodeCloud\Bundle\ShopifyBundle\Api\Response\ErrorResponse;
@@ -47,7 +48,7 @@ abstract class AbstractEndpoint
     /**
      * @param RequestInterface $request
      * @param string $rootElement
-     * @return array
+     * @return ResponseCollection
      * @throws FailedRequestException
      */
     protected function sendPaged(RequestInterface $request, $rootElement)
@@ -66,15 +67,13 @@ abstract class AbstractEndpoint
             $prototype = new GenericResource();
         }
 
-        $collection = array();
-
-        foreach ((array)$items as $item) {
+        foreach ($items as $index => $item) {
             $newItem = clone $prototype;
             $newItem->hydrate($item);
-            $collection[] = $newItem;
+            $items[$index] = $newItem;
         }
 
-        return $collection;
+        return $items;
     }
 
     /**
@@ -134,24 +133,21 @@ abstract class AbstractEndpoint
      * @param RequestInterface $request
      * @param string $rootElement
      * @param array $params
-     * @return array
+     * @return ResponseCollection
      */
     protected function processPaged(RequestInterface $request, $rootElement, array $params = array())
     {
         $requestUrl = $request->getUri();
-
         $parts = parse_url($requestUrl);
 
         if (isset($parts['query'])) {
             parse_str($parts['query'], $query);
-            if (array_key_exists('limit', $query) || array_key_exists('page', $query)) {
-                $response = $this->process($request->withUri(new Uri($requestUrl)));
-                return $response->get($rootElement);
-            }
-        }
 
-        if (empty($params['page'])) {
-            $params['page'] = 1;
+            if (array_key_exists('limit', $query) || array_key_exists('page_info', $query)) {
+                $response = $this->process($request->withUri(new Uri($requestUrl)));
+
+                return new ResourceCollection($response->get($rootElement), $response);
+            }
         }
 
         if (empty($params['limit'])) {
@@ -159,23 +155,16 @@ abstract class AbstractEndpoint
         }
 
         $allResults = array();
+        $paramDelim = strstr($requestUrl, '?') ? '&' : '?';
 
         do {
-            $paramDelim = strstr($requestUrl, '?') ? '&' : '?';
-
             $pagedRequest = $request->withUri(new Uri($requestUrl . $paramDelim . http_build_query($params)));
-
             $response = $this->process($pagedRequest);
+            $resourceCollection = new ResourceCollection($response->get($rootElement), $response);
+            $allResults = array_merge($allResults, $resourceCollection->getItems());
+            $params = $resourceCollection->getNextLinkParams();
+        } while ($params !== null);
 
-            $root = $response->get($rootElement);
-
-            if ($pageResults = empty($root) ? false : $root) {
-                $allResults = array_merge($allResults, $pageResults);
-            }
-
-            $params['page']++;
-        } while ($pageResults);
-
-        return $allResults;
+        return new ResourceCollection($allResults);
     }
 }

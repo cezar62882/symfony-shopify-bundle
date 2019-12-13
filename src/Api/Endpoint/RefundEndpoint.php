@@ -16,7 +16,7 @@ class RefundEndpoint extends AbstractEndpoint
     public function findOne($orderId, $refundId, array $fields = array())
     {
         $params = $fields ? array('fields' => implode(',', $fields)) : array();
-        $request = new GetJson('/admin/orders/' . $orderId . '/refunds/' . $refundId . '.json', $params);
+        $request = new GetJson('orders/' . $orderId . '/refunds/' . $refundId . '.json', $params);
         $response = $this->send($request);
         return $this->createEntity($response->get('refund'));
     }
@@ -28,7 +28,7 @@ class RefundEndpoint extends AbstractEndpoint
      */
     public function create($orderId, GenericResource $refund)
     {
-        $request = new PostJson("/admin/orders/$orderId/refunds.json", array('refund' => $refund->toArray()));
+        $request = new PostJson("orders/$orderId/refunds.json", array('refund' => $refund->toArray()));
         $response = $this->send($request);
         return $this->createEntity($response->get('refund'));
     }
